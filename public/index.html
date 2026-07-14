@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>共享记事本</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+    <header class="header">
+      <h1>共享记事本</h1>
+      <button id="newMemoButton" type="button">新增备忘录</button>
+    </header>
+
+    <section id="memoList" class="memo-list" aria-label="备忘录列表"></section>
+  </main>
+
+  <div id="modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-panel">
+      <h2 id="modalTitle"></h2>
+
+      <textarea id="memoInput" rows="8" aria-label="备忘录内容"></textarea>
+
+      <div class="modal-actions">
+        <button id="saveButton" type="button">保存</button>
+        <button id="editButton" type="button">编辑</button>
+        <button id="deleteButton" type="button">删除</button>
+        <button id="cancelButton" type="button">取消</button>
+        <button id="closeButton" type="button">关闭</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="confirmModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <div class="modal-panel">
+      <h2 id="confirmTitle">确认删除？</h2>
+      <p>删除后无法恢复。</p>
+
+      <div class="modal-actions">
+        <button id="confirmDeleteButton" type="button">确认删除</button>
+        <button id="cancelDeleteButton" type="button">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

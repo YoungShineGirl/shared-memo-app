@@ -1,0 +1,12 @@
+{
+  "name": "shared-memo-app",
+  "version": "1.0.0",
+  "description": "A simple shared memo web app for teaching web architecture.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "sqlite3": "^6.0.1"
+  }
+}
