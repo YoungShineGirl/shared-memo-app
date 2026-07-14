@@ -3,6 +3,7 @@ npm-debug.log*
 
 data/*.db
 data/*.db-*
+data/memos.json
 !data/.gitkeep
 
 .env

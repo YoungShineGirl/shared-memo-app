@@ -1,6 +1,6 @@
 const express = require('express');
 const path = require('path');
-const db = require('./database');
+const database = require('./database');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -9,30 +9,18 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/api/memos', (req, res) => {
-  db.all('SELECT * FROM memos ORDER BY updated_at DESC', [], (err, rows) => {
-    if (err) {
-      res.status(500).json({ error: 'Failed to load memos' });
-      return;
-    }
-
-    res.json(rows);
-  });
+  res.json(database.getAllMemos());
 });
 
 app.get('/api/memos/:id', (req, res) => {
-  db.get('SELECT * FROM memos WHERE id = ?', [req.params.id], (err, row) => {
-    if (err) {
-      res.status(500).json({ error: 'Failed to load memo' });
-      return;
-    }
+  const memo = database.getMemo(req.params.id);
 
-    if (!row) {
-      res.status(404).json({ error: 'Memo not found' });
-      return;
-    }
+  if (!memo) {
+    res.status(404).json({ error: 'Memo not found' });
+    return;
+  }
 
-    res.json(row);
-  });
+  res.json(memo);
 });
 
 app.post('/api/memos', (req, res) => {
@@ -43,25 +31,7 @@ app.post('/api/memos', (req, res) => {
     return;
   }
 
-  const now = new Date().toISOString();
-
-  db.run(
-    'INSERT INTO memos (content, created_at, updated_at) VALUES (?, ?, ?)',
-    [content, now, now],
-    function handleInsert(err) {
-      if (err) {
-        res.status(500).json({ error: 'Failed to create memo' });
-        return;
-      }
-
-      res.status(201).json({
-        id: this.lastID,
-        content,
-        created_at: now,
-        updated_at: now
-      });
-    }
-  );
+  res.status(201).json(database.createMemo(content));
 });
 
 app.put('/api/memos/:id', (req, res) => {
@@ -72,47 +42,31 @@ app.put('/api/memos/:id', (req, res) => {
     return;
   }
 
-  const now = new Date().toISOString();
+  const memo = database.updateMemo(req.params.id, content);
 
-  db.run(
-    'UPDATE memos SET content = ?, updated_at = ? WHERE id = ?',
-    [content, now, req.params.id],
-    function handleUpdate(err) {
-      if (err) {
-        res.status(500).json({ error: 'Failed to update memo' });
-        return;
-      }
+  if (!memo) {
+    res.status(404).json({ error: 'Memo not found' });
+    return;
+  }
 
-      if (this.changes === 0) {
-        res.status(404).json({ error: 'Memo not found' });
-        return;
-      }
-
-      res.json({
-        id: Number(req.params.id),
-        content,
-        updated_at: now
-      });
-    }
-  );
+  res.json(memo);
 });
 
 app.delete('/api/memos/:id', (req, res) => {
-  db.run('DELETE FROM memos WHERE id = ?', [req.params.id], function handleDelete(err) {
-    if (err) {
-      res.status(500).json({ error: 'Failed to delete memo' });
-      return;
-    }
+  const deleted = database.deleteMemo(req.params.id);
 
-    if (this.changes === 0) {
-      res.status(404).json({ error: 'Memo not found' });
-      return;
-    }
+  if (!deleted) {
+    res.status(404).json({ error: 'Memo not found' });
+    return;
+  }
 
-    res.json({ success: true });
+  res.json({ success: true });
+});
+
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Memo app is running at http://localhost:${PORT}`);
   });
-});
+}
 
-app.listen(PORT, () => {
-  console.log(`Memo app is running at http://localhost:${PORT}`);
-});
+module.exports = app;
