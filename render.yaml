@@ -3,5 +3,8 @@ services:
     name: shared-memo-app
     runtime: node
     plan: free
-    buildCommand: npm install
+    buildCommand: npm ci
     startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 22

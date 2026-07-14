@@ -3,10 +3,14 @@
   "version": "1.0.0",
   "description": "A simple shared memo web app for teaching web architecture.",
   "main": "server.js",
+  "engines": {
+    "node": "22.x"
+  },
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
+    "express": "^5.2.1",
     "sqlite3": "^6.0.1"
   }
 }
